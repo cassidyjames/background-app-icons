@@ -3,5 +3,6 @@
   "name": "Background App Icons",
   "description": "Show Background Apps in the top bar with an icon and menu for quick access to actions",
   "shell-version": ["50"],
+  "settings-schema": "org.gnome.shell.extensions.background-app-icons",
   "version": 1
 }

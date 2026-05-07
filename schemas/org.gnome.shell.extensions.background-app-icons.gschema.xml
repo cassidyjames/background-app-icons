@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.background-app-icons"
+          path="/org/gnome/shell/extensions/background-app-icons/">
+    <key name="panel-position" type="s">
+      <choices>
+        <choice value="left"/>
+        <choice value="right"/>
+      </choices>
+      <default>'right'</default>
+      <summary>Panel position</summary>
+      <description>Whether to show background app icons on the left or right side of the top bar</description>
+    </key>
+  </schema>
+</schemalist>

@@ -184,9 +184,12 @@ export default class BackgroundAppIconsExtension extends Extension {
         this._enabled = true;
         this._appSystem = Shell.AppSystem.get_default();
         this._indicators = new Map();
+        this._settings = this.getSettings();
 
         this._sessionModeChangedId = Main.sessionMode.connect(
             'updated', () => this._syncVisibility());
+        this._positionChangedId = this._settings.connect(
+            'changed::panel-position', () => this._onPositionChanged());
 
         new BackgroundMonitorProxy(
             Gio.DBus.session,
@@ -215,6 +218,10 @@ export default class BackgroundAppIconsExtension extends Extension {
             this._proxyChangedId = 0;
         }
         this._proxy = null;
+
+        this._settings.disconnect(this._positionChangedId);
+        this._positionChangedId = 0;
+        this._settings = null;
 
         this._indicators.forEach(indicator => indicator.destroy());
         this._indicators = null;
@@ -254,6 +261,9 @@ export default class BackgroundAppIconsExtension extends Extension {
             this._indicators.delete(appId);
         });
 
+        const panelPosition = this._settings.get_string('panel-position');
+        const insertPosition = panelPosition === 'left' ? -1 : 0;
+
         const {isLocked} = Main.sessionMode;
         for (const [appId, {app, message}] of currentApps) {
             if (this._indicators.has(appId)) {
@@ -264,12 +274,14 @@ export default class BackgroundAppIconsExtension extends Extension {
                 const indicator = new BackgroundAppIndicator(app, message);
                 indicator.visible = !isLocked;
                 Main.panel.addToStatusArea(
-                    `background-app-${appId}`, indicator, 0, 'right');
+                    `background-app-${appId}`, indicator, insertPosition, panelPosition);
                 this._indicators.set(appId, indicator);
             }
         }
 
-        const box = Main.panel._rightBox;
+        const box = panelPosition === 'left'
+            ? Main.panel._leftBox
+            : Main.panel._rightBox;
         let prevContainer = null;
         for (const appId of currentApps.keys()) {
             const indicator = this._indicators.get(appId);
@@ -277,6 +289,15 @@ export default class BackgroundAppIconsExtension extends Extension {
                 box.set_child_above_sibling(indicator.container, prevContainer);
             prevContainer = indicator.container;
         }
+    }
+
+    _onPositionChanged() {
+        this._indicators.forEach(indicator => {
+            indicator.menu.close();
+            indicator.destroy();
+        });
+        this._indicators.clear();
+        this._sync();
     }
 
     _syncVisibility() {
