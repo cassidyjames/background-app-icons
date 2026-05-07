@@ -106,6 +106,9 @@ class BackgroundAppIndicator extends PanelMenu.Button {
             this.menu.addMenuItem(item);
         });
 
+        if (actions.length > 0)
+            this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
         const quitItem = new PopupMenu.PopupMenuItem(_('Quit'));
         quitItem.connect('activate', () => this._quitApp().catch(logError));
         this.menu.addMenuItem(quitItem);
