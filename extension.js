@@ -87,13 +87,6 @@ class BackgroundAppIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(this._statusItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        const openItem = new PopupMenu.PopupMenuItem(_('Open Window'));
-        openItem.connect('activate', () => {
-            Main.overview.hide();
-            this._app.activate();
-        });
-        this.menu.addMenuItem(openItem);
-
         const actions = (app.app_info?.list_actions() ?? []).filter(
             action => action !== 'new-window');
         actions.forEach(action => {
@@ -108,6 +101,13 @@ class BackgroundAppIndicator extends PanelMenu.Button {
 
         if (actions.length > 0)
             this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+        const openItem = new PopupMenu.PopupMenuItem(_('Open Window'));
+        openItem.connect('activate', () => {
+            Main.overview.hide();
+            this._app.activate();
+        });
+        this.menu.addMenuItem(openItem);
 
         const quitItem = new PopupMenu.PopupMenuItem(_('Quit'));
         quitItem.connect('activate', () => this._quitApp().catch(logError));
