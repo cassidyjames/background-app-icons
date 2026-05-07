@@ -214,7 +214,14 @@ export default class BackgroundAppIconsExtension extends Extension {
             })
             .filter(({app}) => !!app)
             .sort((a, b) => a.app.get_name().localeCompare(b.app.get_name()))
-            .forEach(({appId, app, message}) => currentApps.set(appId, {app, message}));
+            .forEach(({appId, app, message}) => {
+                if (currentApps.has(appId)) {
+                    if (message)
+                        currentApps.get(appId).message = message;
+                } else {
+                    currentApps.set(appId, {app, message});
+                }
+            });
 
         const toRemove = [...this._indicators.keys()].filter(id => !currentApps.has(id));
         toRemove.forEach(appId => {
