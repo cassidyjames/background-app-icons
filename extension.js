@@ -225,7 +225,9 @@ export default class BackgroundAppIconsExtension extends Extension {
 
         const toRemove = [...this._indicators.keys()].filter(id => !currentApps.has(id));
         toRemove.forEach(appId => {
-            this._indicators.get(appId).destroy();
+            const indicator = this._indicators.get(appId);
+            indicator.menu.close();
+            indicator.destroy();
             this._indicators.delete(appId);
         });
 
