@@ -33,3 +33,9 @@ Copy or symlink the extension directory to `~/.local/share/gnome-shell/extension
 ```sh
 gnome-extensions enable background-app-icons@cassidyjames.com
 ```
+
+Log out and back in after making changes.
+
+## Contributing
+
+This extension is designed and developed on and for GNOME. As such, contributors agree to abide by the [GNOME Code of Conduct](https://conduct.gnome.org/).
