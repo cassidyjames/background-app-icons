@@ -69,6 +69,11 @@ class BackgroundAppIndicator extends PanelMenu.Button {
         });
         this.connect('destroy', () => this._onDestroy());
 
+        this.menu.actor.add_style_class_name('app-menu');
+
+        this.menu.addMenuItem(
+            new PopupMenu.PopupMenuItem(app.get_name(), {reactive: false}));
+
         this._statusItem = new PopupMenu.PopupMenuItem(
             message ?? _('Running in the background'),
             {reactive: false});
