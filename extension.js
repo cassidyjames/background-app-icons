@@ -80,7 +80,7 @@ class BackgroundAppIndicator extends PanelMenu.Button {
         this.menu.addMenuItem(this._statusItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        const openItem = new PopupMenu.PopupMenuItem(_('Open'));
+        const openItem = new PopupMenu.PopupMenuItem(_('Open Window'));
         openItem.connect('activate', () => {
             Main.overview.hide();
             this._app.activate();
