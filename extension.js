@@ -30,6 +30,16 @@ const BackgroundMonitorProxy = Gio.DBusProxy.makeProxyWrapper(BackgroundMonitorI
 
 Gio._promisify(Gio.DBusConnection.prototype, 'call');
 
+function getSymbolicIcon(app) {
+    const icon = app.get_icon();
+    if (icon instanceof Gio.ThemedIcon) {
+        const names = icon.get_names();
+        return Gio.ThemedIcon.new_from_names(
+            names.flatMap(n => [`${n}-symbolic`, n]));
+    }
+    return icon;
+}
+
 const BackgroundAppIndicator = GObject.registerClass(
 class BackgroundAppIndicator extends PanelMenu.Button {
     _init(app, message) {
@@ -39,8 +49,9 @@ class BackgroundAppIndicator extends PanelMenu.Button {
         this._showLabelTimeoutId = 0;
 
         this.add_child(new St.Icon({
-            gicon: app.get_icon(),
+            gicon: getSymbolicIcon(app),
             style_class: 'system-status-icon',
+            style: 'padding: 0; margin: 0;',
         }));
 
         this._label = new St.Label({
