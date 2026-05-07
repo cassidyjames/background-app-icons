@@ -94,6 +94,18 @@ class BackgroundAppIndicator extends PanelMenu.Button {
         });
         this.menu.addMenuItem(openItem);
 
+        const actions = (app.app_info?.list_actions() ?? []).filter(
+            action => action !== 'new-window');
+        actions.forEach(action => {
+            const label = app.app_info.get_action_name(action);
+            const item = new PopupMenu.PopupMenuItem(label);
+            item.connect('activate', (_item, event) => {
+                this._app.launch_action(action, event.get_time(), -1);
+                Main.overview.hide();
+            });
+            this.menu.addMenuItem(item);
+        });
+
         const quitItem = new PopupMenu.PopupMenuItem(_('Quit'));
         quitItem.connect('activate', () => this._quitApp().catch(logError));
         this.menu.addMenuItem(quitItem);
